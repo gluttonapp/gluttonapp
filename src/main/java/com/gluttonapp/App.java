@@ -1,5 +1,6 @@
 package com.gluttonapp;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.tinkerpop.gremlin.driver.Cluster;
 import org.apache.tinkerpop.gremlin.driver.remote.DriverRemoteConnection;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
@@ -62,6 +63,10 @@ public class App {
                     //Add is_friends_with Edge
                     System.out.println("added is_friends_with Edge: " + addIsFriendsWithEdge(g));
                     break;
+                case 8:
+                    //Find Friends
+                    System.out.println("friends found: \r\n" + getFriends(g));
+                    break;
                 default:
                     System.out.println("Sorry, please enter valid Option");
             }
@@ -83,6 +88,7 @@ public class App {
         System.out.println("5) Update person Vertex");
         System.out.println("6) Delete person Vertex");
         System.out.println("7) Add is_friends_with Edge");
+        System.out.println("8) Find friends of a person");
         System.out.println("0) Quit");
         System.out.println("--------------");
         System.out.println("Enter your choice:");
@@ -165,6 +171,20 @@ public class App {
                 count().next();
 
         return vertexCount.toString();
+    }
+
+    public static String getFriends(GraphTraversalSource g) {
+        Scanner keyboard = new Scanner(System.in);
+        System.out.println("Enter the name for the person to find their friends:");
+        String name = keyboard.nextLine();
+
+        // list of objects
+        List<Object> friends = g.V().
+                has("person", "name", name).
+                both("is_friends_with").dedup().
+                values("name").toList();
+
+        return StringUtils.join(friends, "\r\n");
     }
 
     public static Cluster connectToDatabase() {
