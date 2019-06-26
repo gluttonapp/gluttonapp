@@ -48,6 +48,10 @@ public class App {
                     //Add Person
                     System.out.println("new person Vertex: " + addPerson(g));
                     break;
+                case 5:
+                    //Update Person
+                    System.out.println("updated person Vertex: " + updatePerson(g));
+                    break;
                 default:
                     System.out.println("Sorry, please enter valid Option");
             }
@@ -66,6 +70,7 @@ public class App {
         System.out.println("2) Get Count of the Edges");
         System.out.println("3) Get person Vertex");
         System.out.println("4) Add new person Vertex");
+        System.out.println("5) Update person Vertex");
         System.out.println("0) Quit");
         System.out.println("--------------");
         System.out.println("Enter your choice:");
@@ -104,6 +109,21 @@ public class App {
         Vertex newVertex = g.addV("person").property("name", name).next();
 
         return newVertex.toString();
+    }
+
+    public static String updatePerson(GraphTraversalSource g) {
+        Scanner keyboard = new Scanner(System.in);
+        System.out.println("Enter the name of the person to update: ");
+        String name = keyboard.nextLine();
+        System.out.println("Enter the new name for the person: ");
+        String newName = keyboard.nextLine();
+
+        //returns a vertex type
+        Vertex vertex = g.V()
+                .has("person", "name", name)
+                .property("name", newName).next();
+
+        return vertex.toString();
     }
 
     public static Cluster connectToDatabase() {
