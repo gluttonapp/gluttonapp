@@ -34,6 +34,10 @@ public class App {
                     //Get Vertex Count
                     System.out.println("Vertex count: " + getVertexCount(g));
                     break;
+                case 2:
+                    //Get Edge Count
+                    System.out.println("Edge count: " + getEdgeCount(g));
+                    break;
                 default:
                     System.out.println("Sorry, please enter valid Option");
             }
@@ -49,6 +53,7 @@ public class App {
         System.out.println("Main Menu:");
         System.out.println("--------------");
         System.out.println("1) Get Count of the Vertices");
+        System.out.println("2) Get Count of the Edges");
         System.out.println("0) Quit");
         System.out.println("--------------");
         System.out.println("Enter your choice:");
@@ -59,6 +64,10 @@ public class App {
 
     public static Long getVertexCount(GraphTraversalSource g) {
         return g.V().count().next();
+    }
+
+    public static Long getEdgeCount(GraphTraversalSource g) {
+        return g.E().count().next();
     }
 
     public static Cluster connectToDatabase() {
