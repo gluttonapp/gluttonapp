@@ -3,6 +3,8 @@ package com.gluttonapp;
 import org.apache.tinkerpop.gremlin.driver.Cluster;
 import org.apache.tinkerpop.gremlin.driver.remote.DriverRemoteConnection;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
+import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__;
+import org.apache.tinkerpop.gremlin.structure.Edge;
 import org.apache.tinkerpop.gremlin.structure.Vertex;
 
 import java.util.List;
@@ -52,6 +54,10 @@ public class App {
                     //Update Person
                     System.out.println("updated person Vertex: " + updatePerson(g));
                     break;
+                case 7:
+                    //Add is_friends_with Edge
+                    System.out.println("added is_friends_with Edge: " + addIsFriendsWithEdge(g));
+                    break;
                 default:
                     System.out.println("Sorry, please enter valid Option");
             }
@@ -71,6 +77,7 @@ public class App {
         System.out.println("3) Get person Vertex");
         System.out.println("4) Add new person Vertex");
         System.out.println("5) Update person Vertex");
+        System.out.println("7) Add is_friends_with Edge");
         System.out.println("0) Quit");
         System.out.println("--------------");
         System.out.println("Enter your choice:");
@@ -119,13 +126,28 @@ public class App {
         String newName = keyboard.nextLine();
 
         //returns a vertex type
-        Vertex vertex = g.V()
-                .has("person", "name", name)
-                .property("name", newName).next();
+        Vertex vertex = g.V().
+                has("person", "name", name).
+                property("name", newName).next();
 
         return vertex.toString();
     }
 
+    public static String addIsFriendsWithEdge(GraphTraversalSource g) {
+        Scanner keyboard = new Scanner(System.in);
+        System.out.println("Enter the name for the person at the edge start: ");
+        String fromName = keyboard.nextLine();
+        System.out.println("Enter the name for the person at the edge end: ");
+        String toName = keyboard.nextLine();
+
+        // returns Edge type
+        Edge newEdge = g.V().has("person", "name", fromName).
+                addE("is_friends_with").
+                  to(__.V().has("person", "name", toName)).
+                next();
+
+        return newEdge.toString();
+    }
     public static Cluster connectToDatabase() {
         Cluster.Builder builder = Cluster.build();
         builder.addContactPoint("localhost");
