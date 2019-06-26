@@ -3,6 +3,7 @@ package com.gluttonapp;
 import org.apache.tinkerpop.gremlin.driver.Cluster;
 import org.apache.tinkerpop.gremlin.driver.remote.DriverRemoteConnection;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
+import org.apache.tinkerpop.gremlin.structure.Vertex;
 
 import java.util.List;
 import java.util.Scanner;
@@ -43,6 +44,10 @@ public class App {
                     //Get Person
                     System.out.println("person Vertex: " + getPerson(g));
                     break;
+                case 4:
+                    //Add Person
+                    System.out.println("new person Vertex: " + addPerson(g));
+                    break;
                 default:
                     System.out.println("Sorry, please enter valid Option");
             }
@@ -60,6 +65,7 @@ public class App {
         System.out.println("1) Get Count of the Vertices");
         System.out.println("2) Get Count of the Edges");
         System.out.println("3) Get person Vertex");
+        System.out.println("4) Add new person Vertex");
         System.out.println("0) Quit");
         System.out.println("--------------");
         System.out.println("Enter your choice:");
@@ -87,6 +93,17 @@ public class App {
                 valueMap().toList();
 
         return properties.toString();
+    }
+
+    public static String addPerson(GraphTraversalSource g) {
+        Scanner keyboard = new Scanner(System.in);
+        System.out.println("Enter the name of the person to add: ");
+        String name = keyboard.nextLine();
+
+        // returns a Vertex type
+        Vertex newVertex = g.addV("person").property("name", name).next();
+
+        return newVertex.toString();
     }
 
     public static Cluster connectToDatabase() {
