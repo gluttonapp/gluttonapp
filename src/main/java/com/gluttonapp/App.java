@@ -54,6 +54,10 @@ public class App {
                     //Update Person
                     System.out.println("updated person Vertex: " + updatePerson(g));
                     break;
+                case 6:
+                    //Delete Person
+                    System.out.println("delete person count: " + deletePerson(g));
+                    break;
                 case 7:
                     //Add is_friends_with Edge
                     System.out.println("added is_friends_with Edge: " + addIsFriendsWithEdge(g));
@@ -77,6 +81,7 @@ public class App {
         System.out.println("3) Get person Vertex");
         System.out.println("4) Add new person Vertex");
         System.out.println("5) Update person Vertex");
+        System.out.println("6) Delete person Vertex");
         System.out.println("7) Add is_friends_with Edge");
         System.out.println("0) Quit");
         System.out.println("--------------");
@@ -148,6 +153,20 @@ public class App {
 
         return newEdge.toString();
     }
+
+    public static String deletePerson(GraphTraversalSource g) {
+        Scanner keyboard = new Scanner(System.in);
+        System.out.println("Enter the name for the person to delete:");
+        String name = keyboard.nextLine();
+
+        // returns a count of the vertices dropped
+        Long vertexCount = g.V().has("person", "name", name).
+                sideEffect(__.drop().iterate()).
+                count().next();
+
+        return vertexCount.toString();
+    }
+
     public static Cluster connectToDatabase() {
         Cluster.Builder builder = Cluster.build();
         builder.addContactPoint("localhost");
