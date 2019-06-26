@@ -3,6 +3,7 @@ package com.gluttonapp;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.tinkerpop.gremlin.driver.Cluster;
 import org.apache.tinkerpop.gremlin.driver.remote.DriverRemoteConnection;
+import org.apache.tinkerpop.gremlin.process.traversal.Path;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__;
 import org.apache.tinkerpop.gremlin.structure.Edge;
@@ -12,6 +13,8 @@ import java.util.List;
 import java.util.Scanner;
 
 import static org.apache.tinkerpop.gremlin.process.traversal.AnonymousTraversalSource.traversal;
+import static org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__.both;
+import static org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__.has;
 import static org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__.out;
 
 public class App {
@@ -72,6 +75,10 @@ public class App {
                     //Find Friends of Friends
                     System.out.println("friends of friends found: \r\n" + getFriendsOfFriends(g));
                     break;
+                case 10:
+                    //Find Path between Persons
+                    System.out.println("Paths found: \r\n" + findPathBetweenPeople(g));
+                    break;
                 default:
                     System.out.println("Sorry, please enter valid Option");
             }
@@ -95,6 +102,7 @@ public class App {
         System.out.println("7) Add is_friends_with Edge");
         System.out.println("8) Find friends of a person");
         System.out.println("9) Find friends of friends of a person");
+        System.out.println("10) Find Paths between two people");
         System.out.println("0) Quit");
         System.out.println("--------------");
         System.out.println("Enter your choice:");
@@ -208,6 +216,26 @@ public class App {
 
         return StringUtils.join(foff, "\r\n");
     }
+
+    public static String findPathBetweenPeople(GraphTraversalSource g) {
+        Scanner keyboard = new Scanner(System.in);
+        System.out.println("Enter the name for the person at the start: ");
+        String fromName = keyboard.nextLine();
+        System.out.println("Enter the name for the person at the end: ");
+        String toName = keyboard.nextLine();
+
+        //List of path objects representing the path between the two persons
+        List<Path> friends = g.V().
+                has("person", "name", fromName).
+                until(has("person", "name", toName)).
+                repeat(
+                        both("is_friends_with").simplePath()
+                ).
+                path().toList();
+
+        return StringUtils.join(friends, "\r\n");
+    }
+
     public static Cluster connectToDatabase() {
         Cluster.Builder builder = Cluster.build();
         builder.addContactPoint("localhost");
