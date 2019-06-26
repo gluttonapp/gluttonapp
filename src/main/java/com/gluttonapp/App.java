@@ -4,6 +4,7 @@ import org.apache.tinkerpop.gremlin.driver.Cluster;
 import org.apache.tinkerpop.gremlin.driver.remote.DriverRemoteConnection;
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource;
 
+import java.util.List;
 import java.util.Scanner;
 
 import static org.apache.tinkerpop.gremlin.process.traversal.AnonymousTraversalSource.traversal;
@@ -38,6 +39,10 @@ public class App {
                     //Get Edge Count
                     System.out.println("Edge count: " + getEdgeCount(g));
                     break;
+                case 3:
+                    //Get Person
+                    System.out.println("person Vertex: " + getPerson(g));
+                    break;
                 default:
                     System.out.println("Sorry, please enter valid Option");
             }
@@ -54,6 +59,7 @@ public class App {
         System.out.println("--------------");
         System.out.println("1) Get Count of the Vertices");
         System.out.println("2) Get Count of the Edges");
+        System.out.println("3) Get person Vertex");
         System.out.println("0) Quit");
         System.out.println("--------------");
         System.out.println("Enter your choice:");
@@ -68,6 +74,19 @@ public class App {
 
     public static Long getEdgeCount(GraphTraversalSource g) {
         return g.E().count().next();
+    }
+
+    public static String getPerson(GraphTraversalSource g) {
+        Scanner keyboard = new Scanner(System.in);
+        System.out.println("Enter the name of the person to find:");
+        String name = keyboard.nextLine();
+
+        // returns of List of the properties
+        List properties = g.V().
+                has("person", "name", name).
+                valueMap().toList();
+
+        return properties.toString();
     }
 
     public static Cluster connectToDatabase() {
