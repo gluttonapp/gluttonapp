@@ -11,6 +11,9 @@ public class App {
         Cluster cluster = connectToDatabase();
         GraphTraversalSource g = getGraphTraversalSource(cluster);
 
+        System.out.println("Using cluster connection: " + cluster.toString());
+        System.out.println("Using traversal source: " + g.toString());
+
         cluster.close();
         System.exit(0);
     }
